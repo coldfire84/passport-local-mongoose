@@ -128,7 +128,11 @@ module.exports = function(schema, options) {
       return promise;
     }
 
-    promise.then(result => cb(null, result)).catch(err => cb(err));
+    // promise.then(result => cb(null, result)).catch(err => cb(err));
+    promise.then(result => cb(null, result)).catch(err => {
+      console.log(err.stack);
+      cb(err);
+    });
   };
 
   schema.methods.changePassword = function(oldPassword, newPassword, cb) {
