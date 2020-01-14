@@ -126,7 +126,10 @@ module.exports = function(schema, options) {
         console.log("Set user password hash")
         this.set(options.hashField, Buffer.from(hashRaw, 'binary').toString(options.encoding));
       })
-      .then(() => this);
+      .then(() => {
+        console.log("Done")
+        this
+      });
 
     if (!cb) {
       return promise;
