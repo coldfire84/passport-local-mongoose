@@ -129,7 +129,6 @@ module.exports = function(schema, options) {
     if (!cb) {
       return promise;
     }
-
     promise.then(result => cb(null, result)).catch(err => cb(err));
   };
 
