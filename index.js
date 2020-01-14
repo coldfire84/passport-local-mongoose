@@ -8,6 +8,7 @@ const authenticate = require('./lib/authenticate');
 module.exports = function(schema, options) {
   options = options || {};
   options.saltlen = options.saltlen || 32;
+  options.rawSalt = options.rawSalt || false;
   options.iterations = options.iterations || 25000;
   options.keylen = options.keylen || 512;
   options.encoding = options.encoding || 'hex';
@@ -108,10 +109,12 @@ module.exports = function(schema, options) {
       .then(saltBuffer => saltBuffer.toString(options.encoding))
       .then(salt => {
         this.set(options.saltField, salt);
-
         return salt;
       })
-      .then(salt => pbkdf2Promisified(password, salt, options))
+      .then(salt => {
+        if (options.rawSalt) salt = saltBuffer;
+        pbkdf2Promisified(password, salt, options)
+        })
       .then(hashRaw => {
         this.set(options.hashField, Buffer.from(hashRaw, 'binary').toString(options.encoding));
       })
