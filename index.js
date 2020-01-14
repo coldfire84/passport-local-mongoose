@@ -108,26 +108,21 @@ module.exports = function(schema, options) {
       .then(() => options.passwordValidatorAsync(password))
       .then(() => randomBytes(options.saltlen))
       .then(saltBuffer => {
-        console.log("Generate bytes")
         if (options.rawSalt) rawSalt = saltBuffer;
         return saltBuffer.toString(options.encoding);
       })
       .then(salt => {
-        console.log("Set user passport salt")
         this.set(options.saltField, salt);
         return salt;
       })
       .then(salt => {
-        console.log("Call pbkdf2 to generate hash")
         if (options.rawSalt) salt = rawSalt;
         return pbkdf2Promisified(password, salt, options);
       })
       .then(hashRaw => {
-        console.log("Set user password hash")
         this.set(options.hashField, Buffer.from(hashRaw, 'binary').toString(options.encoding));
       })
       .then(() => {
-        console.log("Done")
         this
       });
 
@@ -317,7 +312,6 @@ module.exports = function(schema, options) {
 };
 
 function pbkdf2Promisified(password, salt, options) {
-  console.log("Called pbkdf2Promisified")
   return new Promise((resolve, reject) => pbkdf2(password, salt, options, (err, hashRaw) => (err ? reject(err) : resolve(hashRaw))));
 }
 
