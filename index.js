@@ -109,7 +109,7 @@ module.exports = function(schema, options) {
       .then(() => randomBytes(options.saltlen))
       .then(saltBuffer => {
         if (options.rawSalt) rawSalt = saltBuffer;
-        return saltBuffer.toString(options.encoding);
+        saltBuffer.toString(options.encoding);
       })
       .then(salt => {
         this.set(options.saltField, salt);
@@ -128,11 +128,7 @@ module.exports = function(schema, options) {
       return promise;
     }
 
-    // promise.then(result => cb(null, result)).catch(err => cb(err));
-    promise.then(result => cb(null, result)).catch(err => {
-      console.log(err.stack);
-      cb(err);
-    });
+    promise.then(result => cb(null, result)).catch(err => cb(err));
   };
 
   schema.methods.changePassword = function(oldPassword, newPassword, cb) {
