@@ -98,6 +98,7 @@ module.exports = function(schema, options) {
   });
 
   schema.methods.setPassword = function(password, cb) {
+    var rawSalt;
     const promise = Promise.resolve()
       .then(() => {
         if (!password) {
@@ -106,13 +107,16 @@ module.exports = function(schema, options) {
       })
       .then(() => options.passwordValidatorAsync(password))
       .then(() => randomBytes(options.saltlen))
-      .then(saltBuffer => saltBuffer.toString(options.encoding))
+      .then(saltBuffer => {
+        if (options.rawSalt) rawSalt = saltBuffer;
+        return saltBuffer.toString(options.encoding);
+      })
       .then(salt => {
         this.set(options.saltField, salt);
         return salt;
       })
       .then(salt => {
-        if (options.rawSalt) salt = saltBuffer;
+        if (options.rawSalt) salt = rawSalt;
         pbkdf2Promisified(password, salt, options)
         })
       .then(hashRaw => {
