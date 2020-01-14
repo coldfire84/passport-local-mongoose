@@ -110,7 +110,7 @@ module.exports = function(schema, options) {
       .then(saltBuffer => {
         console.log("Generate bytes")
         if (options.rawSalt) rawSalt = saltBuffer;
-        saltBuffer.toString(options.encoding);
+        return saltBuffer.toString(options.encoding);
       })
       .then(salt => {
         console.log("Set user passport salt")
@@ -120,7 +120,7 @@ module.exports = function(schema, options) {
       .then(salt => {
         console.log("Call pbkdf2 to generate hash")
         if (options.rawSalt) salt = rawSalt;
-        pbkdf2Promisified(password, salt, options);
+        return pbkdf2Promisified(password, salt, options);
       })
       .then(hashRaw => {
         console.log("Set user password hash")
